@@ -1,7 +1,7 @@
 {
-  "name": "react_boilerplate",
+  "name": "barstool_boxscore",
   "version": "1.0.0",
-  "description": "React Boilerplate useful for starting projects or take home interview assignments",
+  "description": "Barstool Boxscore Challenge",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --mode development --open --hot --port 3000",
