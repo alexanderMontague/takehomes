@@ -11,45 +11,70 @@ const BoxScore = props => {
   let headerData = {};
   let rowData = {};
   let detailsData = {};
-  console.log("PROPS", props);
 
   // if the score data has not arrived yet
   if (Object.keys(data).length === 0) {
     // show spinner?
-    return <div />;
+    return <div>Loading</div>;
   }
 
-  switch (sport) {
-    case "basketball":
-      const { event_away_team, event_home_team, event_final_result } = data;
-      detailsData = {
-        event_away_team,
-        event_home_team,
-        event_final_result
-      };
-      break;
+  // if barstool API sport
+  if (sport === "basketball" || sport === "soccer") {
+    const {
+      event_away_team,
+      event_home_team,
+      event_final_result,
+      scores = null,
+      goalscorers = null
+    } = data;
 
-    case "soccer":
-      detailsData = {
-        event_away_team,
-        event_home_team,
-        event_final_result
-      };
-      break;
+    rowData = {
+      scoringData: scores || goalscorers,
+      teams: {
+        home: event_home_team,
+        away: event_away_team
+      }
+    };
 
-    case "hockey":
-      break;
+    detailsData = {
+      event_away_team,
+      event_home_team,
+      event_final_result
+    };
+  } else {
+    const {
+      liveData: {
+        boxscore: {
+          teams: { home, away }
+        },
+        plays: { allPlays, scoringPlays }
+      }
+    } = data;
 
-    default:
-      console.log("Unknown Sport");
-      break;
+    rowData = {
+      teams: {
+        home: home.team.name,
+        away: away.team.name
+      },
+      scoringData: scoringPlays.map(index => allPlays[index]),
+      homeGoals: home.teamStats.teamSkaterStats.goals,
+      awayGoals: away.teamStats.teamSkaterStats.goals
+    };
+
+    detailsData = {
+      event_away_team: away.team.name,
+      event_home_team: home.team.name,
+      event_final_result: `${home.teamStats.teamSkaterStats.goals} - ${
+        away.teamStats.teamSkaterStats.goals
+      }`
+    };
   }
 
   return (
     <div className={css.boxscore}>
-      <TeamHeader headerData={headerData} />
-      <TeamRow rowData={rowData} />
-      <TeamDetails detailsData={detailsData} />
+      <TeamHeader sport={sport} />
+      <TeamRow sport={sport} rowData={rowData} />
+      <TeamDetails sport={sport} detailsData={detailsData} />
     </div>
   );
 };
