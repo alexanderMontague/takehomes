@@ -14,4 +14,4 @@
 ### Limitations
 - The API seemed somewhat incomplete at the time, so I was not able to display all of the info based on the css given.
 - One case of this is when the scores for the soccer match do not add up, as we only had goal data for a few of the goals
-- EDIT: Seems like the API for the challenge changed during development :/ 
+- EDIT: Seems like the API for the challenge changed during development :/ did the best I could
