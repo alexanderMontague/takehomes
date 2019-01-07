@@ -5,29 +5,42 @@ import styles from "./Layout.scss";
 
 import ContentRow from "../../components/ContentRow";
 import { fetchShopifyOrders } from "../../helpers/requests";
-import { calculateTotalRevenue } from "../../helpers";
+import {
+  calculateTotalRevenue,
+  calculateTotalOrders,
+  calculateAverageOrderPrice,
+  calculateMostPopularItem
+} from "../../helpers";
 
 class Layout extends Component {
   state = {
     totalRevenue: "...",
     totalOrders: "...",
-    avgOrderPrice: "...",
-    mostPopularItem: "..."
+    averageOrderPrice: "...",
+    mostPopularItem: { item: "...", quantity: "" }
   };
 
   async componentDidMount() {
     const shopifyOrders = await fetchShopifyOrders();
-    console.log(shopifyOrders);
 
     const totalRevenue = calculateTotalRevenue(shopifyOrders);
-    console.log(totalRevenue);
+    const totalOrders = calculateTotalOrders(shopifyOrders);
+    const averageOrderPrice = calculateAverageOrderPrice(shopifyOrders);
+    const mostPopularItem = calculateMostPopularItem(shopifyOrders);
+
+    this.setState({
+      totalRevenue,
+      totalOrders,
+      averageOrderPrice,
+      mostPopularItem
+    });
   }
 
   render() {
     const {
       totalRevenue,
       totalOrders,
-      avgOrderPrice,
+      averageOrderPrice,
       mostPopularItem
     } = this.state;
 
@@ -38,12 +51,20 @@ class Layout extends Component {
           Shopify Orders
         </div>
         <div className={styles.row}>
-          <ContentRow title="Total Order Revenue:" data={totalRevenue} />
+          <ContentRow
+            title="Total Order Revenue:"
+            data={totalRevenue}
+            isTopRow
+          />
         </div>
         <div className={styles.flexRow}>
           <ContentRow title="Total Orders:" data={totalOrders} />
-          <ContentRow title="Average Order Price:" data={avgOrderPrice} />
-          <ContentRow title="Most Popular Item:" data={mostPopularItem} />
+          <ContentRow title="Average Order Price:" data={averageOrderPrice} />
+          <ContentRow
+            title="Most Popular Item:"
+            data={mostPopularItem}
+            isItem
+          />
         </div>
       </div>
     );

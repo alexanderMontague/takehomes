@@ -2,12 +2,18 @@ import React from "react";
 import styles from "./ConentRow.scss";
 
 const ContentRow = props => {
-  const { title, data } = props;
+  const { title, data, isItem, isTopRow } = props;
 
   return (
-    <div className={styles["content-row"]}>
+    <div
+      className={
+        isTopRow
+          ? [styles["content-row"], styles["content-row-top"]].join(" ")
+          : styles["content-row"]
+      }
+    >
       <div className={styles.small}>{title}</div>
-      {data}
+      {isItem ? `${data.item}(${data.quantity})` : data}
     </div>
   );
 };
