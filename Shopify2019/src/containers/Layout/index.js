@@ -1,71 +1,50 @@
-import React, { Component } from "react";
-
-import shopifyLogo from "../../assets/shopify.png";
+import React, { Component, Fragment } from "react";
 import styles from "./Layout.scss";
 
-import ContentRow from "../../components/ContentRow";
-import { fetchShopifyOrders } from "../../helpers/requests";
-import {
-  calculateTotalRevenue,
-  calculateTotalOrders,
-  calculateAverageOrderPrice,
-  calculateMostPopularItem
-} from "../../helpers";
+import Header from "../../components/Header";
+import Search from "../Search";
+import Favourites from "../../components/Favourites";
 
 class Layout extends Component {
   state = {
-    totalRevenue: "...",
-    totalOrders: "...",
-    averageOrderPrice: "...",
-    mostPopularItem: { item: "...", quantity: "" }
+    favouritedItems: []
   };
 
-  async componentDidMount() {
-    const shopifyOrders = await fetchShopifyOrders();
+  toggleFavourite = wasteItemDetails => {
+    const currentFavourites = this.state.favouritedItems;
+    let isInFavs = false;
+    if (currentFavourites.includes(wasteItemDetails)) {
+      isInFavs = true;
+    }
 
-    const totalRevenue = calculateTotalRevenue(shopifyOrders);
-    const totalOrders = calculateTotalOrders(shopifyOrders);
-    const averageOrderPrice = calculateAverageOrderPrice(shopifyOrders);
-    const mostPopularItem = calculateMostPopularItem(shopifyOrders);
+    let updatedFavourites = [];
+    // if item is already in favourites
+    if (isInFavs) {
+      updatedFavourites = currentFavourites.filter(
+        wasteItem => wasteItem !== wasteItemDetails
+      );
+    }
+    // if item is not in favourites
+    else {
+      updatedFavourites = [...currentFavourites];
+      updatedFavourites.push(wasteItemDetails);
+    }
 
-    this.setState({
-      totalRevenue,
-      totalOrders,
-      averageOrderPrice,
-      mostPopularItem
-    });
-  }
+    this.setState({ favouritedItems: updatedFavourites });
+  };
 
   render() {
-    const {
-      totalRevenue,
-      totalOrders,
-      averageOrderPrice,
-      mostPopularItem
-    } = this.state;
+    console.log(this.state);
 
     return (
-      <div className={styles.backdrop}>
-        <div className={styles.header}>
-          <img className={styles.shopifyLogo} src={shopifyLogo} />
-          Shopify Orders
-        </div>
-        <div className={styles.row}>
-          <ContentRow
-            title="Total Order Revenue:"
-            data={totalRevenue}
-            isTopRow
-          />
-        </div>
-        <div className={styles.flexRow}>
-          <ContentRow title="Total Orders:" data={totalOrders} />
-          <ContentRow title="Average Order Price:" data={averageOrderPrice} />
-          <ContentRow
-            title="Most Popular Item:"
-            data={mostPopularItem}
-            isItem
-          />
-        </div>
+      <div className={styles.mainContainer}>
+        <Header headerText="Toronto Waste Lookup" />
+        <Search
+          maxDisplayedItems={3}
+          toggleFavourite={this.toggleFavourite}
+          favourites={this.state.favouritedItems}
+        />
+        <Favourites />
       </div>
     );
   }
