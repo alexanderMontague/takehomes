@@ -6,9 +6,10 @@
   "scripts": {
     "start": "webpack-dev-server --mode development --open --hot --port 3030",
     "build": "webpack --mode production",
-    "deploy": "gh-pages -d build",
+    "deploy": "gh-pages -d dist",
     "predeploy": "npm run build"
   },
+  "homepage": "https://alexandermontague.github.io/takehomes/",
   "author": "Alex Montague",
   "license": "MIT",
   "dependencies": {
