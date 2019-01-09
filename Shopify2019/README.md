@@ -10,12 +10,18 @@
 - CD into the correct project `cd Shopify2019`
 - install dependencies using preferred method `yarn` or `npm i`
 - run the application (will automatically open in browser) `yarn start` or `npm start`
-- OR visit the hosted version here: <UPDATE ME>
+- OR visit the hosted version here: <https://alexandermontague.github.io/takehomes/Shopify2019/dist/>
 
 ### Limitations
 - The design seemed to also search using the disposal method name
 - I decided against doing that as the spec strictly said use the keywords
 - I used the generally frowned upon react prop `dangerouslySetInnerHTML`. This was only because the body data we were given already contained the HTML markup styling the descriptions
+
+### Accidentally did the 2017 challenge too T_T
+![](https://i.imgur.com/eraH7Xj.png)
+- If you want to see that too, head on over to https://alexandermontague.github.io/takehomes/Shopify2017/dist/
+- Spec: https://jawb.io/job/shopify-toronto-on-6-developer-intern-2/
+
 
 ### Spec
 # Web Engineer Challenge - Summer 2019
