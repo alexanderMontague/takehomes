@@ -1,17 +1,50 @@
-# Barstool Full Stack Challenge
-![](https://i.imgur.com/TkoejSQ.png)
+# Shopify 2019 Internship Challenge
+![](https://i.imgur.com/KbpB1qu.png)
 
 ### Description
-- Challenge to create a boxscore widget that displays a sport's outcome based on data fed to it by an API
-- Created using personalized webpack config and react boilerplate
+- Challenge to replicate a waste lookup web app
+- Searching for an item returns a list of disposal methods based on its keywords
 
 ### To Run
 - Clone the repo `git clone https://github.com/alexanderMontague/takehomes`
-- CD into the correct project `cd Barstool`
+- CD into the correct project `cd Shopify2019`
 - install dependencies using preferred method `yarn` or `npm i`
-- run the application (will automatically open in browser) `yarn start` or `npm run start`
+- run the application (will automatically open in browser) `yarn start` or `npm start`
+- OR visit the hosted version here: <UPDATE ME>
 
 ### Limitations
-- The API seemed somewhat incomplete at the time, so I was not able to display all of the info based on the css given.
-- One case of this is when the scores for the soccer match do not add up, as we only had goal data for a few of the goals
-- EDIT: Seems like the API for the challenge changed during development :/ did the best I could
+- The design seemed to also search using the disposal method name
+- I decided against doing that as the spec strictly said use the keywords
+- I used the generally frowned upon react prop `dangerouslySetInnerHTML`. This was only because the body data we were given already contained the HTML markup styling the descriptions
+
+### Spec
+# Web Engineer Challenge - Summer 2019
+
+Build a web app to search for waste items using the Toronto Waste Wizard database, and save frequently used ones.
+
+## Instructions
+- Reproduce the design as provided in the screenshot, which displays example search results.
+- The data must be taken from the [Waste Wizard Lookup data (JSON)](https://www.toronto.ca/city-government/data-research-maps/open-data/open-data-catalogue/#5ed40494-a290-7807-d5da-09ab6a56fca2).
+- Typing in the search field should *NOT* perform an API call.
+- A search must be performed when hitting enter or clicking the search button.
+- When the search input field is cleared, the list of results should also be cleared. 
+- Performing a search should render a list of potential matching items based on keywords. Each item should:
+   - Render the title and description of the item.
+   - Render a grey star button *if the item is not already favourited*.
+   - Render a green star icon *if the item is not already favourited*.
+   - Clicking the star button should add the item to the favourites list.
+- When the number of favourites is more than one, the app should render a list of items. Each saved item should:
+   - Render the title and description of the item.
+   - Render a green star button *if the item has been favourited*.
+   - Clicking the green star button should remove the item from the saved list.
+
+## Design
+
+![Design](http://cdn.shopify.com/static/web-eng-challenge-summer-2019/design.png)
+
+## Submission
+
+In your application, please include: 
+
+1. A link to your codebase, for review.
+2. A link to a hosted version, for testing.
