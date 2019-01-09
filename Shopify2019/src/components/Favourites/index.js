@@ -31,7 +31,7 @@ const Favourites = props => {
     });
   };
   return (
-    <div>
+    <div className={styles.favouriteBackground}>
       <div className={styles.favouriteHeader}>Favourites</div>
       {props.favourites.length > 0
         ? renderFavourites()
