@@ -4,7 +4,7 @@ import styles from "./Search.scss";
 import WasteItem from "../../components/WasteItem";
 
 import wasteData from "../../assets/wasteLookupData.json";
-import { FaSearch } from "react-icons/fa"; // super cool library
+import { FaSearch } from "react-icons/Fa"; // super cool library
 
 class Search extends Component {
   state = {
@@ -12,9 +12,17 @@ class Search extends Component {
     wasteItems: []
   };
 
+  componentDidUpdate = prevProps => {
+    // trigger an re-render when favourites change
+    if (prevProps.favourites !== this.props.favourites) {
+      this.wasteLookupHandler(new Event("submit"));
+    }
+  };
+
   searchInputHandler = event => {
     if (event.target.value.length === 0) {
       this.setState({ wasteItems: [] });
+      return;
     }
 
     this.setState({ searchInput: event.target.value });
@@ -24,8 +32,13 @@ class Search extends Component {
     event.preventDefault();
 
     const { searchInput } = this.state;
+
+    // 1 to prevent searching on buffered character when removing favourite
+    if (searchInput.length <= 1) {
+      return;
+    }
+
     const { toggleFavourite, maxDisplayedItems, favourites } = this.props;
-    console.log("favs", favourites);
 
     const wasteItems = wasteData
       .map(item => {
@@ -33,8 +46,6 @@ class Search extends Component {
         // only searches keywords as per the spec
         // the design seems to also search the titles
         if (keywords.toLowerCase().includes(searchInput.toLowerCase())) {
-          console.log(favourites.includes(title) ? true : false);
-
           return (
             <WasteItem
               title={title}
@@ -47,9 +58,10 @@ class Search extends Component {
         }
         return null;
       })
-      .filter(wasteComponent => !!wasteComponent)
-      .slice(0, maxDisplayedItems);
+      .filter(wasteComponent => !!wasteComponent) // filter out null entries
+      .slice(0, maxDisplayedItems); // only display max amount of items
 
+    wasteItems.length === 0 ? wasteItems.push("No items found!") : null;
     this.setState({ wasteItems });
   };
 

@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./WasteItem.scss";
 
 import { FaStar } from "react-icons/Fa";
 
 const WasteItem = props => {
   const { isInFavs, title, description, toggleFavourite } = props;
-  const [isFavourited, setFavourited] = useState(isInFavs); // Hooks :o
 
   // decodes the escaped HTML so react will actually render the HTML not the text
   const decodeHTML = content => {
@@ -19,7 +18,6 @@ const WasteItem = props => {
 
   const toggleFavouriteHandler = () => {
     toggleFavourite(title);
-    setFavourited(!isFavourited);
   };
 
   return (
@@ -28,7 +26,7 @@ const WasteItem = props => {
         <div>
           <FaStar
             className={styles.favStar}
-            color={isFavourited ? "#208e52" : "#a0a0a0"}
+            color={isInFavs ? "#208e52" : "#a0a0a0"}
             onClick={toggleFavouriteHandler}
           />
         </div>

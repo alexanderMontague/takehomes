@@ -34,8 +34,6 @@ class Layout extends Component {
   };
 
   render() {
-    console.log(this.state);
-
     return (
       <div className={styles.mainContainer}>
         <Header headerText="Toronto Waste Lookup" />
@@ -44,7 +42,10 @@ class Layout extends Component {
           toggleFavourite={this.toggleFavourite}
           favourites={this.state.favouritedItems}
         />
-        <Favourites />
+        <Favourites
+          favourites={this.state.favouritedItems}
+          toggleFavourite={this.toggleFavourite}
+        />
       </div>
     );
   }
