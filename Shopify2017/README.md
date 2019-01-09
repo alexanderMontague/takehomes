@@ -6,4 +6,4 @@
 - Spec is here: https://jawb.io/job/shopify-toronto-on-6-developer-intern-2/
 
 ### To Run
-
+Visit the deployed site here: https://alexandermontague.github.io/takehomes/Shopify2017/dist/
