@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --mode development --open --hot --port 3030",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "deploy": "gh-pages -d build",
+    "predeploy": "npm run build"
   },
   "author": "Alex Montague",
   "license": "MIT",
