@@ -13,6 +13,7 @@
 - OR visit the hosted version here: <https://alexandermontague.github.io/takehomes/Shopify2019/dist/>
 
 ### Limitations
+- **_NOTE!_** I stored the JSON locally and realized I should have used the city of toronto API after submission :(. I hope this does not hinder my application, and if you want to see an API request example please see the Shopify 2017 challenge! I make a proxied request there
 - The design seemed to also search using the disposal method name
 - I decided against doing that as the spec strictly said use the keywords
 - I used the generally frowned upon react prop `dangerouslySetInnerHTML`. This was only because the body data we were given already contained the HTML markup styling the descriptions
