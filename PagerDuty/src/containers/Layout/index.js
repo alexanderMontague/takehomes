@@ -77,7 +77,7 @@ class Layout extends Component {
       <div className={styles.backdrop}>
         <div className={styles.header}>
           <img className={styles.pagerdutyLogo} src={pagerdutyLogo} />
-          Pagerduty Menu Application!
+          PagerDuty Menu Application!
         </div>
         <div className={styles.searchBar}>
           <form onSubmit={this.addDishHandler}>
