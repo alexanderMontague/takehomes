@@ -1,0 +1,35 @@
+.content-row {
+  min-height: 80px;
+  min-width: 250px;
+  max-width: 250px;
+  border-top: 4px solid #5dbd5f;
+  padding: 0 10px 0 10px;
+  color: white;
+  line-height: 1em;
+  text-align: center;
+  background: #333339;
+  margin: 50px 30px;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  box-shadow: rgba(29, 29, 29, 0.3) 0px 0px 1.25em 0.25em;
+}
+
+.content-row-top {
+  max-width: none;
+}
+
+.small {
+  font-size: 1rem;
+  padding: 28px 0;
+}
+
+.closeButton {
+  position: relative;
+  float: right;
+  margin: 60px 35px 0 0;
+}
+
+.closeButton:hover {
+  cursor: pointer;
+}
