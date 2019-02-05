@@ -5,6 +5,12 @@ import styles from "./Layout.scss";
 
 import Dish from "../../components/Dish";
 
+// possible implementations:
+// - search
+// - order of items
+// - add more info to the menu items (ingredients, time to make, price)
+//
+
 class Layout extends Component {
   state = {
     dishInput: "",
@@ -18,7 +24,7 @@ class Layout extends Component {
     const newDishes = [...dishes];
 
     // add new dish without mutating state
-    newDishes.push(dishInput);
+    newDishes.push({ dishName: dishInput });
 
     // update dish array and clear add input
     this.setState({ dishInput: "", dishes: newDishes });
@@ -26,8 +32,8 @@ class Layout extends Component {
 
   removeDishHandler = dishName => {
     const { dishes } = this.state;
-    // remove dish from state that needs to be filtered out
-    const newDishes = dishes.filter(dish => dish != dishName);
+    // remove dish from state that needs to be removed
+    const newDishes = dishes.filter(dish => dish.dishName != dishName);
     this.setState({ dishes: newDishes });
   };
 
@@ -36,9 +42,14 @@ class Layout extends Component {
     const dishGrid = [];
     const { dishes } = this.state;
 
+    // loop through all current dishes
     dishes.forEach((dish, dishCounter) => {
       dishRow.push(
-        <Dish key={dish} dishName={dish} removeDish={this.removeDishHandler} />
+        <Dish
+          key={dish.dishName}
+          dishName={dish.dishName}
+          removeDish={this.removeDishHandler}
+        />
       );
 
       // every 3 items, break off row and add to main grid
@@ -78,9 +89,10 @@ class Layout extends Component {
           PagerDuty Menu Application!
         </div>
 
-        {/* Dish Addition Input */}
+        {/* Dish Addition Form */}
         <div className={styles.searchBar}>
-          <form onSubmit={this.addDishHandler}>
+          <form onSubmit={this.addDishHandler} className={styles.dishForm}>
+            {/* Dish Name Input */}
             <input
               type="text"
               className={styles.searchInput}
@@ -88,6 +100,7 @@ class Layout extends Component {
               onChange={this.dishInputHandler}
               value={this.state.dishInput}
             />
+
             <button className={styles.searchButton} type="submit">
               Add Dish!
             </button>
