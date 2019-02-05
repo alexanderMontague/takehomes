@@ -5,12 +5,6 @@ import styles from "./Layout.scss";
 
 import Dish from "../../components/Dish";
 
-// possible implementations:
-// - search
-// - order of items
-// - add more info to the menu items (ingredients, time to make, price)
-//
-
 class Layout extends Component {
   state = {
     dishInput: "",
