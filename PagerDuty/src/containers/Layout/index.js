@@ -15,51 +15,47 @@ class Layout extends Component {
     event.preventDefault();
 
     const { dishInput, dishes } = this.state;
-    const newDishes = dishes;
+    const newDishes = [...dishes];
 
-    // add new item without mutating state
-    newDishes.push(
-      <Dish
-        key={dishInput}
-        dishName={dishInput}
-        removeDish={this.removeDishHandler}
-      />
-    );
+    // add new dish without mutating state
+    newDishes.push(dishInput);
+
+    // update dish array and clear add input
     this.setState({ dishInput: "", dishes: newDishes });
   };
 
   removeDishHandler = dishName => {
     const { dishes } = this.state;
-    const newDishes = dishes.filter(dish => dish.props.dishName != dishName);
+    // remove dish from state that needs to be filtered out
+    const newDishes = dishes.filter(dish => dish != dishName);
     this.setState({ dishes: newDishes });
   };
 
   renderDishes = () => {
-    let itemCount = 0;
     let dishRow = [];
     const dishGrid = [];
     const { dishes } = this.state;
 
-    dishes.forEach(dish => {
-      dishRow.push(dish);
-      itemCount++;
+    dishes.forEach((dish, dishCounter) => {
+      dishRow.push(
+        <Dish key={dish} dishName={dish} removeDish={this.removeDishHandler} />
+      );
 
       // every 3 items, break off row and add to main grid
-      if (itemCount % 3 === 0) {
+      if ((dishCounter + 1) % 3 === 0) {
         dishGrid.push(
-          <div className={styles.flexRow} key={dishRow[0].props.dishName}>
+          <div className={styles.flexRow} key={dishRow[0].key}>
             {dishRow}
           </div>
         );
-        itemCount = 0;
         dishRow = [];
       }
     });
 
-    // if there are less than 3 items in a row, add row to main grid
+    // if there are less than 3 items in a row, add last row to main grid
     if (dishes.length % 3 !== 0) {
       dishGrid.push(
-        <div className={styles.flexRow} key={dishRow[0].props.dishName}>
+        <div className={styles.flexRow} key={dishRow[0].key}>
           {dishRow}
         </div>
       );
@@ -68,6 +64,7 @@ class Layout extends Component {
     return dishGrid;
   };
 
+  // Add Dish Input Handler
   dishInputHandler = dishInput => {
     this.setState({ dishInput: dishInput.target.value });
   };
@@ -75,10 +72,13 @@ class Layout extends Component {
   render() {
     return (
       <div className={styles.backdrop}>
+        {/* Header */}
         <div className={styles.header}>
           <img className={styles.pagerdutyLogo} src={pagerdutyLogo} />
           PagerDuty Menu Application!
         </div>
+
+        {/* Dish Addition Input */}
         <div className={styles.searchBar}>
           <form onSubmit={this.addDishHandler}>
             <input
@@ -93,6 +93,8 @@ class Layout extends Component {
             </button>
           </form>
         </div>
+
+        {/* Rendered Dish Grid */}
         {this.renderDishes()}
       </div>
     );

@@ -48,6 +48,10 @@ body {
     cursor: pointer;
   }
 
+  .searchButton:hover {
+    background: #5dbd5f;
+  }
+
   .searchInput:focus,
   .searchButton:focus {
     outline: none;
