@@ -29,10 +29,11 @@ body {
     background: #333339;
     border: none;
     border-top: 4px solid #5dbd5f;
-    border-radius: 5px 0 0 5px;
+    border-radius: 5px;
     font-family: "Courier New", Courier, monospace;
     font-size: 1rem;
     padding-left: 10px;
+    margin: 20px 0;
   }
 
   .searchButton {
@@ -41,8 +42,7 @@ body {
     background: #333339;
     border: none;
     border-top: 4px solid #5dbd5f;
-    border-left: 2px solid #5dbd5f;
-    border-radius: 0 5px 5px 0;
+    border-radius: 5px;
     font-family: "Courier New", Courier, monospace;
     font-size: 1rem;
     cursor: pointer;
@@ -56,6 +56,11 @@ body {
   .searchButton:focus {
     outline: none;
   }
+}
+
+.dishForm {
+  display: flex;
+  flex-direction: column;
 }
 
 .flexRow {
