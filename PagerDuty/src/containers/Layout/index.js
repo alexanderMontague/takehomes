@@ -7,21 +7,21 @@ import Dish from "../../components/Dish";
 
 class Layout extends Component {
   state = {
-    dishInput: "",
+    dishName: "",
     dishes: []
   };
 
   addDishHandler = event => {
     event.preventDefault();
 
-    const { dishInput, dishes } = this.state;
+    const { dishName, dishes } = this.state;
     const newDishes = [...dishes];
 
     // add new dish without mutating state
-    newDishes.push({ dishName: dishInput });
+    newDishes.push({ dishName });
 
     // update dish array and clear add input
-    this.setState({ dishInput: "", dishes: newDishes });
+    this.setState({ dishName: "", dishes: newDishes });
   };
 
   removeDishHandler = dishName => {
@@ -41,7 +41,7 @@ class Layout extends Component {
       dishRow.push(
         <Dish
           key={dish.dishName}
-          dishName={dish.dishName}
+          dishDetails={dish}
           removeDish={this.removeDishHandler}
         />
       );
@@ -69,11 +69,6 @@ class Layout extends Component {
     return dishGrid;
   };
 
-  // Add Dish Input Handler
-  dishInputHandler = dishInput => {
-    this.setState({ dishInput: dishInput.target.value });
-  };
-
   render() {
     return (
       <div className={styles.backdrop}>
@@ -91,8 +86,10 @@ class Layout extends Component {
               type="text"
               className={styles.searchInput}
               placeholder="Enter a dish name"
-              onChange={this.dishInputHandler}
-              value={this.state.dishInput}
+              onChange={event =>
+                this.setState({ dishName: event.target.value })
+              }
+              value={this.state.dishName}
             />
 
             <button className={styles.searchButton} type="submit">

@@ -4,7 +4,10 @@ import styles from "./Dish.scss";
 import { FaTimesCircle } from "react-icons/fa";
 
 const ContentRow = props => {
-  const { dishName, removeDish } = props;
+  const {
+    dishDetails: { dishName },
+    removeDish
+  } = props;
 
   return (
     <span>
