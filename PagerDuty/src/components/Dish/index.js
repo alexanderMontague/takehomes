@@ -5,7 +5,7 @@ import { FaTimesCircle } from "react-icons/fa";
 
 const ContentRow = props => {
   const {
-    dishDetails: { dishName },
+    dishDetails: { dishName, dishIngredients },
     removeDish
   } = props;
 
@@ -18,6 +18,7 @@ const ContentRow = props => {
       />
       <div className={styles["content-row"]}>
         <div className={styles.small}>{dishName}</div>
+        <div className={styles.ingredients}>Ingredients: {dishIngredients}</div>
       </div>
     </span>
   );
