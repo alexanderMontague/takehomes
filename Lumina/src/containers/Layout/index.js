@@ -24,7 +24,6 @@ class Layout extends Component {
     }
 
     this.setState({ topStories });
-    console.log(topStories, CURR_UNIX_TIME);
   }
 
   renderStories = () => {

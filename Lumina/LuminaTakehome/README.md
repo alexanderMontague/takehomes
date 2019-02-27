@@ -9,6 +9,6 @@
 
 ### To Run
 
-- CD into the correct project `cd LuminaTakehome`
+- CD into the correct project `cd LuminaApp`
 - install dependencies using preferred method `yarn` or `npm i`
 - run the application (will automatically open in browser) `yarn start` or `npm start`
