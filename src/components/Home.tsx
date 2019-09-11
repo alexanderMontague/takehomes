@@ -1,6 +1,8 @@
 import React, { useState, ChangeEvent } from "react";
 
-import { isValidSudokuString } from "../helpers/sudoku";
+import SudokuBoard from "./SudokuBoard";
+import { sudokuBoard, sudokuCell, sudokuString } from "../helpers/types";
+import { isValidSudokuString, solveSudokuString } from "../helpers/sudoku";
 
 // using font awesome's react icon library
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,18 +14,24 @@ import {
   StyledInput,
   StyledToolTip,
   StyledInfoWrapper,
-  StyledButton
+  StyledButton,
+  LoadingSpinner
 } from "./Elements";
 
-const Landing = props => {
+const Home = props => {
   const [sudokuString, setSudokuString] = useState(""); // where the sudoku string input is stored
   const [statusMessage, setStatusMessage] = useState(""); // status used to provide feedback to the user
   const [isInputValid, setIsInputValid] = useState(false); // used to signal a syntactically invalid sudoku string
   const [isSudokuValid, setIsSudokuValid] = useState(false); // used to signal a correct and valid sudoku string after it has been validated
+  const [solvedSudokuBoard, setSolvedSudokuBoard] = useState(null);
+  const [isLoading, setLoadingStatus] = useState(false);
 
   // some frontend validation to make the UX a bit better
   const inputValidator = (e: ChangeEvent<HTMLInputElement>) => {
     let newInput = e.target.value;
+    // end sudoku is not valid if we have to re-validate it
+    setIsSudokuValid(false);
+    setSolvedSudokuBoard(null);
 
     // don't even let user enter spaces and provide most FE validation
     newInput = newInput.replace(/\s/g, "");
@@ -43,7 +51,7 @@ const Landing = props => {
     setSudokuString(newInput);
   };
 
-  const validateSudoku = () => {
+  const validateSudokuHandler = () => {
     // now validate min length
     if (sudokuString.length < 81) {
       setStatusMessage("The sudoku string must be exactly 81 characters long!");
@@ -61,6 +69,7 @@ const Landing = props => {
       );
       setIsInputValid(true);
       setIsSudokuValid(true);
+      setSudokuString(parsedSudokuString);
     } else {
       setStatusMessage(
         "The sudoku string provided is invalid! There are duplicate numbers in a unit, row or column."
@@ -68,6 +77,89 @@ const Landing = props => {
       setIsInputValid(false);
       setIsSudokuValid(false);
     }
+
+    setLoadingStatus(false);
+  };
+
+  const solveSudokuHandler = () => {
+    setLoadingStatus(true);
+
+    // as the sudoku string is re-validated on every change, the string will be valid and we do not need to re-validate
+    const [solvedSudokuBoard, calculationTime] = solveSudokuString(
+      sudokuString
+    );
+
+    console.log(solvedSudokuBoard, calculationTime);
+    setSolvedSudokuBoard(solvedSudokuBoard);
+    if (solvedSudokuBoard === null) {
+      setStatusMessage(
+        "Unable to solve given sudoku string. It may be too difficult! Would you like to try again?"
+      );
+    } else {
+      setStatusMessage("Successfully solved sudoku string!");
+    }
+
+    setLoadingStatus(false);
+  };
+
+  const renderButtons = () => {
+    if (isLoading) {
+      return <LoadingSpinner />;
+    } else if (solvedSudokuBoard) {
+      return (
+        <StyledButton
+          type="button"
+          onClick={() => {
+            setIsSudokuValid(false);
+            setSolvedSudokuBoard(null);
+            setStatusMessage("");
+          }}
+          customStyles={{ width: "224px" }}
+        >
+          Reset Board?
+        </StyledButton>
+      );
+    } else if (isSudokuValid) {
+      return (
+        <StyledFlexBox>
+          <StyledButton
+            type="button"
+            onClick={() => {
+              setLoadingStatus(true);
+              setTimeout(() => solveSudokuHandler(), 0); // allow re-render so user can see loading and not "hang"
+            }}
+            customStyles={{ width: "224px" }}
+          >
+            Yes
+          </StyledButton>
+          <StyledButton
+            type="button"
+            onClick={() => {
+              // reset sudoku string status when user does not want to solve
+              setStatusMessage("");
+              setIsSudokuValid(false);
+            }}
+            customStyles={{ width: "224px" }}
+          >
+            No
+          </StyledButton>
+        </StyledFlexBox>
+      );
+    }
+
+    return (
+      <StyledButton
+        type="button"
+        onClick={validateSudokuHandler}
+        disabled={!isInputValid}
+        customStyles={{
+          width: "450px",
+          margin: "50px 0"
+        }}
+      >
+        Validate Sudoku
+      </StyledButton>
+    );
   };
 
   return (
@@ -85,6 +177,13 @@ const Landing = props => {
       <StyledText size="15px" color="#FFFFFF" margin="30px 0 10px 0">
         {statusMessage}
       </StyledText>
+
+      {
+        <SudokuBoard
+          rawSudokuString={sudokuString}
+          solvedSudokuBoard={solvedSudokuBoard}
+        />
+      }
 
       <StyledFlexBox>
         <StyledInput
@@ -109,47 +208,10 @@ const Landing = props => {
           <FontAwesomeIcon icon={faQuestionCircle} color="#FFFFFF" size="2x" />
         </StyledInfoWrapper>
       </StyledFlexBox>
-      {isSudokuValid ? (
-        <StyledFlexBox>
-          <StyledButton
-            type="button"
-            onClick={validateSudoku}
-            customStyles={{
-              width: "224px",
-              margin: "50px 0"
-            }}
-          >
-            Yes
-          </StyledButton>
-          <StyledButton
-            type="button"
-            onClick={validateSudoku}
-            customStyles={{
-              width: "224px",
-              margin: "50px 0"
-            }}
-          >
-            No
-          </StyledButton>
-        </StyledFlexBox>
-      ) : (
-        <StyledButton
-          type="button"
-          onClick={validateSudoku}
-          disabled={!isInputValid}
-          customStyles={{
-            width: "450px",
-            margin: "50px 0"
-          }}
-        >
-          Validate Sudoku
-        </StyledButton>
-      )}
+
+      {renderButtons()}
     </StyledFlexBox>
   );
 };
 
-export default Landing;
-
-// bad
-// 83..7....6..195....98....6.8...6...34..8.3..17...2...6.6....28....419..5....8..79
+export default Home;

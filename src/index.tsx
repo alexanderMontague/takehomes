@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import store from "./store";
 import { createGlobalStyle } from "styled-components";
 
-import Landing from "./components/Landing";
+import Home from "./components/Home";
 
 const GlobalStyles = createGlobalStyle`
   body {
@@ -22,7 +22,7 @@ const GlobalStyles = createGlobalStyle`
 ReactDOM.render(
   <Provider store={store}>
     <GlobalStyles />
-    <Landing />
+    <Home />
   </Provider>,
   document.getElementById("root")
 );

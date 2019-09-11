@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 // Fantastic component library potential and reusability through custom props
-// Paired with storybook, SC is fantastic!
-// In reality these should also be abstracted out to a private NPM module to reduce overhead
+// Paired with storybook, styled components is fantastic!
+// In reality these should also be abstracted out to a private NPM module to reduce overhead or a custom component library repository
 
 export const StyledFlexBox = styled.div`
   display: flex;
@@ -16,8 +16,7 @@ export const StyledText = styled.h1`
   font-size: ${props => props.size};
   color: ${props => props.color};
   margin: ${props => props.margin};
-  height: ${props =>
-    props.height || props.size}; /* default height to font if not specified */
+  height: ${props => props.height || props.size};
 `;
 
 export const StyledInput = styled.input`
@@ -85,4 +84,36 @@ export const StyledButton = styled.button`
     background: #a9a9a9;
     cursor: not-allowed;
   }
+`;
+
+export const LoadingSpinner = styled.div`
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #2c5364;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1.5s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+export const StyledTable = styled.table`
+  border-collapse: collapse;
+  background: #ffffff;
+  margin: 50px 0 70px 0;
+`;
+
+export const StyledData = styled.td`
+  border: solid thin;
+  height: 1.4em;
+  width: 1.4em;
+  text-align: center;
+  padding: 0;
 `;
