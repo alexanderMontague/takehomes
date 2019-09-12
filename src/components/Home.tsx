@@ -1,7 +1,10 @@
 import React, { useState, ChangeEvent } from "react";
+import { connect } from "react-redux";
 
 import SudokuBoard from "./SudokuBoard";
-import { sudokuBoard, sudokuCell, sudokuString } from "../helpers/types";
+
+import { validatedSudoku, solvedSudoku } from "../actions";
+import { sudokuBoard, sudokuString } from "../helpers/types";
 import { isValidSudokuString, solveSudokuString } from "../helpers/sudoku";
 
 // using font awesome's react icon library
@@ -18,64 +21,99 @@ import {
   LoadingSpinner
 } from "./Elements";
 
-const Home = props => {
-  const [sudokuString, setSudokuString] = useState(""); // where the sudoku string input is stored
-  const [statusMessage, setStatusMessage] = useState(""); // status used to provide feedback to the user
-  const [isInputValid, setIsInputValid] = useState(false); // used to signal a syntactically invalid sudoku string
-  const [isSudokuValid, setIsSudokuValid] = useState(false); // used to signal a correct and valid sudoku string after it has been validated
-  const [solvedSudokuBoard, setSolvedSudokuBoard] = useState(null);
+interface sudokuState {
+  rawSudokuString: sudokuString; // raw string input representing a sudoku string
+  solvedSudokuBoard: sudokuBoard | null; // solved sudokuBoard in array format
+
+  isRawInputValid: boolean; // used to signal a syntactically valid sudoku string from the raw input
+  isSudokuStringValid: boolean; // used to signal a correct and valid sudoku string after the validation function
+}
+
+const Home = ({ validatedSudoku, solvedSudoku, addSudoku }) => {
+  // state pertaining to sudoku logic
+  const [sudokuState, setSudokuState] = useState<sudokuState>({
+    rawSudokuString: "",
+    solvedSudokuBoard: null,
+    isRawInputValid: false,
+    isSudokuStringValid: false
+  });
+  const [username, setUsername] = useState("");
+  const [statusMessage, setStatusMessage] = useState(""); // used to provide feedback to the user
   const [isLoading, setLoadingStatus] = useState(false);
 
   // some frontend validation to make the UX a bit better
   const inputValidator = (e: ChangeEvent<HTMLInputElement>) => {
-    let newInput = e.target.value;
+    let rawSudokuString = e.target.value;
+    let isRawInputValid = false;
     // end sudoku is not valid if we have to re-validate it
-    setIsSudokuValid(false);
-    setSolvedSudokuBoard(null);
+    setSudokuState({
+      ...sudokuState,
+      solvedSudokuBoard: null,
+      isSudokuStringValid: false
+    });
 
     // don't even let user enter spaces and provide most FE validation
-    newInput = newInput.replace(/\s/g, "");
-    if (newInput.search(/^[0-9\.]+$/) === -1 && newInput.length !== 0) {
+    rawSudokuString = rawSudokuString.replace(/\s/g, "");
+    if (
+      rawSudokuString.search(/^[0-9\.]+$/) === -1 &&
+      rawSudokuString.length !== 0
+    ) {
       setStatusMessage("Only numbers and periods please!");
-      setIsInputValid(false);
-    } else if (newInput.length > 81) {
+    } else if (rawSudokuString.length > 81) {
       // check max length here, but validate minimum on submit so user is not continuously facing a warning message
       setStatusMessage("The sudoku string must be exactly 81 characters long!");
-      setIsInputValid(false);
     } else {
       setStatusMessage("");
-      setIsInputValid(true);
+      isRawInputValid = true;
     }
 
     // update our parsed input
-    setSudokuString(newInput);
+    setSudokuState({
+      ...sudokuState,
+      rawSudokuString: rawSudokuString,
+      isRawInputValid
+    });
   };
 
   const validateSudokuHandler = () => {
     // now validate min length
-    if (sudokuString.length < 81) {
+    if (sudokuState.rawSudokuString.length < 81) {
       setStatusMessage("The sudoku string must be exactly 81 characters long!");
-      setIsInputValid(false);
+      setSudokuState({ ...sudokuState, isRawInputValid: false });
       return;
     }
 
     // replace all periods with 0s before sending to validation function
-    const parsedSudokuString = sudokuString.replace(/\./g, "0");
+    const parsedSudokuString = sudokuState.rawSudokuString.replace(/\./g, "0");
     const isValidSudoku = isValidSudokuString(parsedSudokuString);
 
     if (isValidSudoku) {
       setStatusMessage(
         "The sudoku string provided is valid! Would you like to attempt to solve the sudoku?"
       );
-      setIsInputValid(true);
-      setIsSudokuValid(true);
-      setSudokuString(parsedSudokuString);
+      setSudokuState({
+        ...sudokuState,
+        rawSudokuString: parsedSudokuString,
+        isRawInputValid: true,
+        isSudokuStringValid: true
+      });
+      validatedSudoku({
+        rawSudokuString: parsedSudokuString,
+        isValid: true
+      });
     } else {
       setStatusMessage(
         "The sudoku string provided is invalid! There are duplicate numbers in a unit, row or column."
       );
-      setIsInputValid(false);
-      setIsSudokuValid(false);
+      setSudokuState({
+        ...sudokuState,
+        isRawInputValid: false,
+        isSudokuStringValid: false
+      });
+      validatedSudoku({
+        rawSudokuString: parsedSudokuString,
+        isRawInputValid: false
+      });
     }
 
     setLoadingStatus(false);
@@ -86,11 +124,11 @@ const Home = props => {
 
     // as the sudoku string is re-validated on every change, the string will be valid and we do not need to re-validate
     const [solvedSudokuBoard, calculationTime] = solveSudokuString(
-      sudokuString
+      sudokuState.rawSudokuString
     );
 
-    console.log(solvedSudokuBoard, calculationTime);
-    setSolvedSudokuBoard(solvedSudokuBoard);
+    setSudokuState({ ...sudokuState, solvedSudokuBoard });
+
     if (solvedSudokuBoard === null) {
       setStatusMessage(
         "Unable to solve given sudoku string. It may be too difficult! Would you like to try again?"
@@ -99,27 +137,40 @@ const Home = props => {
       setStatusMessage("Successfully solved sudoku string!");
     }
 
+    // dispatch solved sudoku action to save to DB
+    solvedSudoku({
+      username,
+      solvedSudokuBoard,
+      solvedSudokuString: solvedSudokuBoard
+        ? solvedSudokuBoard.map(row => row.join("")).join("")
+        : null,
+      isComplete: !!solvedSudokuBoard,
+      timeTaken: calculationTime
+    });
     setLoadingStatus(false);
   };
 
   const renderButtons = () => {
     if (isLoading) {
       return <LoadingSpinner />;
-    } else if (solvedSudokuBoard) {
+    } else if (sudokuState.solvedSudokuBoard) {
       return (
         <StyledButton
           type="button"
           onClick={() => {
-            setIsSudokuValid(false);
-            setSolvedSudokuBoard(null);
+            setSudokuState({
+              ...sudokuState,
+              solvedSudokuBoard: null,
+              isSudokuStringValid: false
+            });
             setStatusMessage("");
           }}
           customStyles={{ width: "224px" }}
         >
-          Reset Board?
+          Reset Board
         </StyledButton>
       );
-    } else if (isSudokuValid) {
+    } else if (sudokuState.isSudokuStringValid) {
       return (
         <StyledFlexBox>
           <StyledButton
@@ -137,7 +188,7 @@ const Home = props => {
             onClick={() => {
               // reset sudoku string status when user does not want to solve
               setStatusMessage("");
-              setIsSudokuValid(false);
+              setSudokuState({ ...sudokuState, isSudokuStringValid: false });
             }}
             customStyles={{ width: "224px" }}
           >
@@ -151,7 +202,7 @@ const Home = props => {
       <StyledButton
         type="button"
         onClick={validateSudokuHandler}
-        disabled={!isInputValid}
+        disabled={!sudokuState.isRawInputValid || !username}
         customStyles={{
           width: "450px",
           margin: "50px 0"
@@ -180,8 +231,8 @@ const Home = props => {
 
       {
         <SudokuBoard
-          rawSudokuString={sudokuString}
-          solvedSudokuBoard={solvedSudokuBoard}
+          rawSudokuString={sudokuState.rawSudokuString}
+          solvedSudokuBoard={sudokuState.solvedSudokuBoard}
         />
       }
 
@@ -189,7 +240,7 @@ const Home = props => {
         <StyledInput
           type="text"
           placeholder="Enter a Sudoku String!"
-          value={sudokuString}
+          value={sudokuState.rawSudokuString}
           onChange={inputValidator}
           customStyles={{
             width: "380px",
@@ -200,7 +251,8 @@ const Home = props => {
         <StyledInfoWrapper>
           {/* I assume the user will get most knowledge from the README, but a quick tooltip never hurts */}
           <StyledToolTip>
-            A Sudoku string is an 81 character long string representing all
+            {/* text blobs like this should be localized in production! */}A
+            Sudoku string is an 81 character long string representing all
             sequential rows on a Sudoku board reading cells left to right.
             Numbers 1-9 are valid for each known cell and zero or a period can
             be used as a blank cell.
@@ -209,9 +261,28 @@ const Home = props => {
         </StyledInfoWrapper>
       </StyledFlexBox>
 
+      <StyledInput
+        type="text"
+        placeholder="Enter a Username!"
+        value={username}
+        onChange={e => setUsername(e.target.value)}
+        customStyles={{
+          width: "430px",
+          size: "15px",
+          margin: "10px 0 30px 0"
+        }}
+      />
+
       {renderButtons()}
     </StyledFlexBox>
   );
 };
 
-export default Home;
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = { validatedSudoku, solvedSudoku };
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Home);

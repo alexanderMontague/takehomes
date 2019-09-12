@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
-import userState from "./userReducer";
+import sudokuState from "./sudokuReducer";
 
 const rootReducer = combineReducers({
-  userState
+  sudokuState
 });
 
 export default rootReducer;
