@@ -4,11 +4,10 @@
   "description": "Sudoku Solver App built for W20 Internship Opportunity",
   "main": "index.js",
   "scripts": {
-    "start": "npm run client > /dev/null | npm run server | mongod --config /usr/local/etc/mongod.conf > /dev/null",
-    "stop_mongo": "mongo admin --eval \"db.shutdownServer()\"",
+    "start": "npm run client --scripts-prepend-node-path > /dev/null | npm run server --scripts-prepend-node-path | mongod --config /usr/local/etc/mongod.conf > /dev/null",
     "build": "webpack  --mode development",
     "client": "webpack-dev-server  --mode development --inline --hot --open",
-    "server": "nodemon server.ts --scripts-prepend-node-path"
+    "server": "nodemon server.ts"
   },
   "keywords": [
     "react",
