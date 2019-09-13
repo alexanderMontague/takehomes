@@ -1,282 +1,209 @@
-# 00 Boilerplate
+# 🚗 Tesla Sudoku Solver 🔋
 
-In this sample we setup the basic plumbing to "build" our project and launch it in a dev server.
+_Alex Montague
+W2020
+September 12, 2019_
 
-We won't install anything related to React, but some basic plumbing. React and ReactDOM are imported in sample 01.
+![TSS](https://imgur.com/YUj0onB.png)
 
-We setup an initial <abbr title="Node.js package manager, a package manager for the JavaScript runtime environment Node.js">npm</abbr> project, give support to TypeScript, and install React.<br />
-Then we create a **helloworld.ts** sample.
+Welcome to my README! Thanks for this awesome opportunity, I had a lot of fun creating this project. Regardless of the outcome, it has been a great learning experience! Before reading, feel free to take a look at this video I created demonstrating the features of my application! I thought a video was a little more personal and far more entertaining! [https://www.youtube.com/watch?v=eOpwYJusPnk](https://www.youtube.com/watch?v=eOpwYJusPnk)
 
-Summary steps:
+(the video is unlisted)
 
-- Prerequisites: Install Node.js
-- Initialize **[./package.json](./package.json)** (with `npm init`)
-- Install:
-  - Webpack and webpack-dev-server.
-  - TypeScript.
-  - Babel.
-- Setup **[./webpack.config.js](./webpack.config.js)**
-- Create a test JS file.
-- Create a simple HTML file.
+### Disclaimer:
 
-# Prerequisites
+- I hope I interpreted the question correctly
 
-Install [Node.js and npm](https://nodejs.org/en/) (v8.9.1 or higher) if they are not already installed on your computer.
+- I took it as "Given an 81 character sudoku string, return whether it is valid"
 
-> Verify that you are running at least node v8.x.x and npm 5.x.x by running `node -v` and `npm -v` in a terminal/console window. Older versions may produce errors.
+- This would also work with a full filled out sudoku string, as it is based off of duplicate numbers in a row, column or unit
 
-## Steps to build it
+- Hopefully this is acceptable!
 
-- Create and navigate to the folder where you are going to create the empty project.
+## Prerequisites
 
-- Execute `npm init`. You are prompted to answer some questions about the project (e.g. set name to _samplereact_ and description to _Sample working with React, TypeScript and Webpack_).
-  Once you have successfully answered them, a **[./package.json](./package.json)** file is generated.
+I will get into running the application as an end user vs. developer right after this section, but that assumes that all prerequisites and dependencies are installed. This is so we can get the whole experience!
 
-```bash
-npm init
+- A UNIX based system
+
+- `node.js` version >= `10.0.0`
+
+- `yarn` (preferred and tested on) or `npm`
+
+- `nodemon` installed globally (it is a dependency, just making sure!)
+
+- MongoDB. Install with: `brew tap mongodb/brew` and then `brew install mongodb-community@4.2` if you have homebrew!
+
+## Running as a User
+
+Welcome, sudoku loving user to my sudoku application! To get started make sure you have all of the prerequisites met and the project downloaded + unzipped!
+
+(As a sidenote, the best UX would be for this app to be hosted + deployed so the end user does not have to do any of this. If this were the case I would have gone with a heroku instance for the React and Node servers, along with a Mongo's cloud cluster. Dockerizing things and utilizing Kubernetes is also an attractive option)
+
+**To Run The Application:**
+
+- Navigate to the project directory with a terminal
+
+- In the terminal, type `yarn` if using yarn or `npm i` if using npm
+
+- Once everything is installed, type `yarn start` or `npm start`
+
+- Thats it!
+
+- Your browser should now open to `localhost:8080` and if it did not, go ahead and navigate there
+
+**To Use The Application:**
+
+- You should now see the sudoku solver interface
+
+- You will have one input to enter your sudoku string, and another for your username
+
+- A sudoku string is an 81 character string representing every row in a sudoku board
+
+- Go ahead and type your sudoku string in manually, or paste one from somewhere
+
+- Here are some great resources for [EASY](https://norvig.com/easy50.txt) and [HARD](http://magictour.free.fr/top95) sudoku strings
+
+- You may enter any number 1-9 and 0 or "." (period) represents a blank cell
+
+- Once happy with your string, click "Validate Sudoku" to first validate it. This will make sure it is syntactically correct.
+
+- Once the string is valid, go ahead and click "Yes" to solve the sudoku!
+
+## Running as a Developer
+
+Hello fearless developer! Welcome to the application. Make sure you have met the prerequisites and lets dive in.
+
+**To Run The Application:**
+
+- clone the repository (I can give you GitHub access to the private repo) or `cd` into the project folder
+
+- In the terminal, type `yarn` if using yarn or `npm i` if using npm
+
+- Once everything is installed, type `yarn start` or `npm start`
+
+- The `start` script is actually a combination of a few commands, so if for whatever reason it does not work, you can try to run things separately
+
+- The script trys to start up our React frontend through webpack, node server with nodemon, and mongo all in one go!
+
+- If things fail try running: - `yarn client` or `npm run client` then - `yarn server` or `npm run server` then - `mongod --config /usr/local/etc/mongod.conf` or edit the command to point to wherever your `mongod.conf` is located!
+
+- I tested with a clean install on a few machines, so hopefully it won't get to this point!
+
+**To Use The Application:**
+
+- This is mostly the same as a regular user, so feel free to follow those instructions too
+
+- **Access the Database:**
+
+If you want to see into the data stored from our sudoku app, you can use some preset endpoints I created for easy use, or dive into Mongo. Navigate to `localhost:8081` to start.
+
+This is an example user sudoku document:
+
 ```
 
-- Install **webpack** as a development dependency.
-
-```bash
-npm install webpack webpack-cli --save-dev
-```
-
-- Install **webpack-dev-server** locally, as a development dependency (the reason to install it locally and not globally is to be easy to setup, e.g. can be launched on a clean machine without having to install anything globally but nodejs).
-
-```bash
-npm install webpack-dev-server --save-dev
-```
-
-- Let's install a list of plugins and loaders to add capabilities to our webpack configuration (handling <abbr title="Cascading Style Sheets">CSS</abbr>, TypeScript...).
-
-```bash
-npm install css-loader style-loader file-loader url-loader html-webpack-plugin awesome-typescript-loader mini-css-extract-plugin --save-dev
-```
-
-- Let's add two commands to our **[./package.json](./package.json)**: build and start.
-
-_[./package.json](./package.json)_
-
-```diff
-  "scripts": {
--    "test": "echo \"Error: no test specified\" && exit 1",
-+    "start": "webpack-dev-server  --mode development --inline --hot --open",
-+    "build": "webpack  --mode development"
-  },
-```
-
-- Let's install TypeScript locally:
-
-```bash
-npm install typescript --save-dev
-```
-
-- We need as well to drop a **[./tsconfig.json](./tsconfig.json)** file in the root folder of our project
-
-_[./tsconfig.json](./tsconfig.json)_
-
-```json
 {
-  "compilerOptions": {
-    "target": "es6",
-    "module": "es6",
-    "moduleResolution": "node",
-    "declaration": false,
-    "noImplicitAny": false,
-    "jsx": "react",
-    "sourceMap": true,
-    "noLib": false,
-    "suppressImplicitAnyIndexErrors": true
-  },
-  "compileOnSave": false,
-  "exclude": ["node_modules"]
-}
-```
 
-- Now, we need to transpile ES6 to ES5. Let's install **@babel/cli**, **@babel/core**, **@babel/preset-env** and **@babel/polyfill**.
+user_created_on: "2019-09-12T20:03:21.429Z",
 
-```bash
-npm install @babel/cli @babel/core @babel/preset-env @babel/polyfill --save-dev
-```
+_id: "5d7aa7123c1d38d2edd8cde4",
 
-- Let's install webpack _babel_ loader.
+user_name: "Alex",
 
-```bash
-npm install babel-loader --save-dev
-```
+sudokus:
 
-- Babel needs to be configured for it to work. We create **[./.babelrc](./.babelrc)** in the root folder. Later we will see how to put it in **[./webpack.config.js](./webpack.config.js)**. In this example, we use this .babelrc:
+[
 
-_[./.babelrc](./.babelrc)_
-
-```json
 {
-  "presets": [
-    [
-      "@babel/preset-env",
-      {
-        "useBuiltIns": "entry"
-      }
-    ]
-  ]
-}
-```
 
-- Now, our **[./package.json](./package.json)** file should look something like:
+puzzle_created: "2019-09-12T20:03:21.429Z",
 
-_[./package.json](./package.json)_
+_id: "5d7aa7123c1d38d2edd8cde5",
 
-```json
+original_sudoku_string: "005000987040050001007000000200048000090100000600200000300600200000009070000000500",
+
+solved_sudoku_String: "135426987846957321927381465213748659598163742674295813351674298482539176769812534",
+
+is_complete: true,
+
+time_taken: 63.815000001341105
+
+},
+
 {
-  "name": "reactbysample",
-  "version": "1.0.0",
-  "description": "In this sample we setup the basic plumbing to \"build\" our project and launch it in a dev server.",
-  "main": "index.js",
-  "scripts": {
-    "start": "webpack-dev-server  --mode development --inline --hot --open",
-    "build": "webpack  --mode development"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@babel/cli": "^7.1.2",
-    "@babel/core": "^7.1.2",
-    "@babel/polyfill": "^7.0.0",
-    "@babel/preset-env": "^7.1.0",
-    "awesome-typescript-loader": "^5.2.1",
-    "babel-loader": "^8.0.4",
-    "css-loader": "^1.0.0",
-    "file-loader": "^2.0.0",
-    "html-webpack-plugin": "^3.2.0",
-    "mini-css-extract-plugin": "^0.4.3",
-    "style-loader": "^0.23.1",
-    "typescript": "^3.1.1",
-    "url-loader": "^1.1.1",
-    "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.9"
-  }
+
+puzzle_created: "2019-09-12T20:03:21.429Z",
+
+_id: "5d7aa7cb3c1d38d2edd8cde6",
+
+original_sudoku_string: "600302000040000010000000000702600000000000054300000000080150000000040200000000700",
+
+solved_sudoku_String: "615382479943765812827491536752634198168279354394518627286157943579843261431926785",
+
+is_complete: true,
+
+time_taken: 1051.1350000160746
+
 }
+
+],
+
+__v: 0
+
+},
+
 ```
 
-- Let's create a subfolder called **src**.
+- To see every single record in our database navigate or send a GET to `localhost:8081/all_sudoku_users/`
 
-```bash
-mkdir src
-```
+- To see all records for a single user navigate or send a GET to `localhost:8081/sudoku_user/:user_name` where `:user_name` is the name of a user you used in the frontend app. `localhost:8081/sudoku_user/alex` would pull up all records for user alex
 
-- Let's create a basic **[main.ts](./src/main.ts)** file (under **src** folder):
+* One thing you can do differently if you want to see how the app works is dive into the code
 
-_[./src/main.ts](./src/main.ts)_
+* The app is structured with `src` holding our React code containing our Redux Actions, Sagas, Reducers and store. We also have our Components folder holding our reusable react components. I decided against the container + component structure for this small project.
 
-```javascript
-document.write("Hello from main.ts !");
-```
+* Outside of the `src` folder we have `server.ts` where our node/express server lives, our webpack config and our other config + package files.
 
-- Let's create a basic **[index.html](./src/index.html)** file (under **src** folder):
+* Frontend additions can be made mostly to `src/components/Home.tsx` and server changes can be made to `server.ts`
 
-_[./src/index.html](./src/index.html)_
+## Architecture
 
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title></title>
-  </head>
-  <body>
-    <div class="well">
-      <h1>Sample app</h1>
-    </div>
-  </body>
-</html>
-```
+This app was built ontop of Typescript utilizing React/Redux + Sagas for the frontend, Node/Express for our server, and MongoDB for our database
 
-- Now it's time to create a basic **[./webpack.config.js](./webpack.config.js)** file. This configuration includes plumbing for:
-- Launching a web dev server.
-- Transpiling from TypeScript to JavaScript.
-- Generating the build under a **dist** folder.
+**Frontend:**
 
-_[./webpack.config.js](./webpack.config.js)_
+- I went with a pretty typical React/Redux layout except built ontop of TypeScript
 
-```javascript
-var HtmlWebpackPlugin = require("html-webpack-plugin");
-var MiniCssExtractPlugin = require("mini-css-extract-plugin");
-var webpack = require("webpack");
-var path = require("path");
+- This was new to me as I have never used TypeScript, but I really enjoyed it (for the most part). After some experience with a strongly typed language like Go, it was nice to have the types and know exactly what I was dealing with. I did not know enough to effectively implement a fully typed Redux lifecycle, but tried my best!
 
-var basePath = __dirname;
+- Redux in general along with Sagas might have been a little overkill, but I did want to give that a go with TS. I also built the Redux structure out for scale so thats why I have a root Reducer and Saga even though we only have one state stream + saga.
 
-module.exports = {
-  context: path.join(basePath, "src"),
-  resolve: {
-    extensions: [".js", ".ts", ".tsx"]
-  },
-  entry: ["@babel/polyfill", "./main.ts"],
-  output: {
-    path: path.join(basePath, "dist"),
-    filename: "bundle.js"
-  },
-  devtool: "source-map",
-  devServer: {
-    contentBase: "./dist", // Content base
-    inline: true, // Enable watch and live reload
-    host: "localhost",
-    port: 8080,
-    stats: "errors-only"
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(ts|tsx)$/,
-        exclude: /node_modules/,
-        loader: "awesome-typescript-loader",
-        options: {
-          useBabel: true,
-          babelCore: "@babel/core" // needed for Babel v7
-        }
-      },
-      {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader"]
-      },
-      {
-        test: /\.(png|jpg|gif|svg)$/,
-        loader: "file-loader",
-        options: {
-          name: "assets/img/[name].[ext]?[hash]"
-        }
-      }
-    ]
-  },
-  plugins: [
-    //Generate index.html in /dist => https://github.com/ampedandwired/html-webpack-plugin
-    new HtmlWebpackPlugin({
-      filename: "index.html", //Name of file in ./dist/
-      template: "index.html", //Name of template in ./src
-      hash: true
-    }),
-    new MiniCssExtractPlugin({
-      filename: "[name].css",
-      chunkFilename: "[id].css"
-    })
-  ]
-};
-```
+**Backend:**
 
-- Run webpack:
+- I utilized the same javascript project for our server simply because of how small it was
 
-```bash
-npm start
-```
+- For a full scale back end application this should most definitely live by itself. I really just liked utilizing the same dependencies and having everything bundled together.
 
-# About Basefactor + Lemoncode
+- I would normally go down the route of having our main server entry point, then refactoring our routes out into controllers and the business logic living in components. Also a pretty standard node setup.
 
-We are an innovating team of Javascript experts, passionate about turning your ideas into robust products.
+- Overall though the server does exactly what I need it to for this use case!
 
-[Basefactor, consultancy by Lemoncode](http://www.basefactor.com) provides consultancy and coaching services.
+- I also utilized mongoose as our ODM as it is what I have the most experience with.
 
-[Lemoncode](http://lemoncode.net/services/en/#en-home) provides training services.
+**Database:**
 
-For the LATAM/Spanish audience we are running an Online Front End Master degree, more info: http://lemoncode.net/master-frontend
+- Not too much to say here, but MongoDB was the easiest to setup + bootstrap, and also works really well with this ecosystem.
+
+- The MERN stack is something I have a lot of experience with, and I find it works really nicely especially when you have frontend devs doing some backend work as JS is consistent
+
+- There are some drawbacks to using a document or non-relational styled DB, but again for this same they were non-existant! For large projects I would probably so with an SQL based DBMS like Postgres
+
+## Time Taken
+
+Overall this projet took me about 3 full work days. I would say the majority of the headaches came from trying to implement Typescript and getting Webpack + Node to play nicely. The base case was implemented using a trivial solution within an hour or two (you can see the code at `src/helpers/sudoku.ts:14`) and the full stack implementation took the rest of the time. I did have class inbetween all of this, so in total it was completed from Tuesday Sep. 10 - Thursday Sep. 12.
+
+## Code
+
+This readme should be bundled with the code as well, but I also have it hosted at `git@github.com:alexanderMontague/sudoku-solver.git` (you will need to give me an email for access) and a dropbox link hosting the code is here: [https://www.dropbox.com/s/vqavemtq3uo8jxy/Alex_Montague_Sudoku_Solver.zip?dl=0](https://www.dropbox.com/s/vqavemtq3uo8jxy/Alex_Montague_Sudoku_Solver.zip?dl=0)
+
+Thanks so much for the opportunity!
