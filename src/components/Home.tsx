@@ -29,7 +29,7 @@ interface sudokuState {
   isSudokuStringValid: boolean; // used to signal a correct and valid sudoku string after the validation function
 }
 
-const Home = ({ validatedSudoku, solvedSudoku, addSudoku }) => {
+const Home = ({ validatedSudoku, solvedSudoku }) => {
   // state pertaining to sudoku logic
   const [sudokuState, setSudokuState] = useState<sudokuState>({
     rawSudokuString: "",
@@ -110,6 +110,8 @@ const Home = ({ validatedSudoku, solvedSudoku, addSudoku }) => {
         isRawInputValid: false,
         isSudokuStringValid: false
       });
+
+      // action creator
       validatedSudoku({
         rawSudokuString: parsedSudokuString,
         isRawInputValid: false
@@ -142,7 +144,7 @@ const Home = ({ validatedSudoku, solvedSudoku, addSudoku }) => {
       username,
       solvedSudokuBoard,
       solvedSudokuString: solvedSudokuBoard
-        ? solvedSudokuBoard.map(row => row.join("")).join("")
+        ? solvedSudokuBoard.map(row => row.join("")).join("") // convert sudoku board to string
         : null,
       isComplete: !!solvedSudokuBoard,
       timeTaken: calculationTime
