@@ -2,9 +2,7 @@ import {
   VALIDATED_SUDOKU_STRING,
   ADD_SUDOKU_PUZZLE,
   ADD_SUDOKU_PUZZLE_RESPONSE,
-  SudokuActionTypes
-} from "./types";
-import {
+  SudokuActionTypes,
   validatedSudokuPayload,
   addSudokuPayload,
   sudokuResponsePayload
