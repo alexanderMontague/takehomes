@@ -46,7 +46,7 @@ app.use(express.json());
 
 // would normally split routing logic out using controller + component method
 // GET ROUTES
-// list every single sudoku record
+// list every sudoku record for a specified user
 app.get("/sudoku_user/:user_name", async (req, res) => {
   console.log("GET to route /sudoku_user"); // would normally use some logging middleware
   const user_name = req.params.user_name;
@@ -94,7 +94,7 @@ app.get("/sudoku_user/:user_name", async (req, res) => {
   );
 });
 
-// list all sudoku records for a certain naim
+// list all sudoku records
 app.get("/all_sudoku_users", async (req, res) => {
   console.log("GET to route /all_sudoku_users");
 
